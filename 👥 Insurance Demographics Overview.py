@@ -3,14 +3,13 @@ st.set_page_config(layout="wide")
 
 from google import genai
 from google.genai import types
-from access_token import GOOGLE_API_KEY
 
 import pandas as pd
 import plotly.express as px
 
 # Gemini-based LLM function
 def generate_llm_insight(prompt):
-    client = genai.Client(api_key=GOOGLE_API_KEY)
+    client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
     response = client.models.generate_content(
         model="gemini-2.0-flash",
         config=types.GenerateContentConfig(system_instruction="You are a data analyst summarizing insurance user survey data."),
