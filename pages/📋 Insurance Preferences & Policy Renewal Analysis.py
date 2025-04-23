@@ -37,12 +37,12 @@ for col, selected in zip([city_col, age_col, edu_col, job_col], [selected_city, 
     if selected != "All":
         df = df[df[col] == selected]
 
-selected_section = st.radio("📊 Select Section", ["Digital Preferences", "Policy Renewal Reasons", "Digital Readiness"], horizontal=True)
+selected_section = st.radio("📊 Select Section", ["📱 Digital Preferences", "🎯 Policy Renewal Reasons", "📶 Digital Readiness"], horizontal=True)
 
-if selected_section == "Digital Preferences":
+if selected_section == "📱 Digital Preferences":
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("📱 Digital Channel Preference")
+        # st.subheader("📱 Digital Channel Preference")
         # Select columns with digital channels
         digital_cols = [col for col in df.columns if any(x in col for x in ["WhatsApp", "App", "Website", "Chatbot", "Call Centre"])]
 
@@ -70,10 +70,10 @@ if selected_section == "Digital Preferences":
         insight = generate_llm_insight(digital_prompt)
         st.markdown(f"**Insight:**\n{insight}")
 
-elif selected_section == "Policy Renewal Reasons":
+elif selected_section == "🎯 Policy Renewal Reasons":
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("🎯 Policy Renewal Reasons (Weighted)")
+        # st.subheader("🎯 Policy Renewal Reasons (Weighted)")
         renew_cols = [col for col in df.columns if "renew the policy" in col]
         weights = {"Rank 1": 4, "Rank 2": 3, "Rank 3": 2, "Rank 4": 1}
         weighted_scores = {}
@@ -95,10 +95,10 @@ elif selected_section == "Policy Renewal Reasons":
         insight = generate_llm_insight(renew_prompt)
         st.markdown(f"**Insight:**\n{insight}")
 
-elif selected_section == "Digital Readiness":
+elif selected_section == "📶 Digital Readiness":
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("📶 Digital Readiness Score by Age")
+        # st.subheader("📶 Digital Readiness Score by Age")
         digital_cols = [col for col in df.columns if any(x in col for x in ["WhatsApp", "App", "Website", "Chatbot", "Call Centre"])]
         df["digital_score"] = df[digital_cols].apply(pd.to_numeric, errors='coerce').sum(axis=1)
         readiness_scores = df.groupby(age_col)["digital_score"].mean().sort_values().reset_index()
