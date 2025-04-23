@@ -20,7 +20,7 @@ def generate_llm_insight(prompt):
 
 @st.cache_data
 def load_data():
-    return pd.read_excel("Preprocessed_Motor_Insurance_Data.xlsx")
+    return pd.read_excel("combined_insurance_data.xlsx")
 
 df = load_data()
 
