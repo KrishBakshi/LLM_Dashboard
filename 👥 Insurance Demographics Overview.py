@@ -38,11 +38,10 @@ for col, selected in zip([city_col, age_col, edu_col, job_col], [selected_city, 
     if selected != "All":
         df = df[df[col] == selected]
 
-selected_section = st.radio("📊 Select Section", ["🧬 Respondent Profile", "🗺️ Demographics by Location", "📈 Socioeconomic Patterns"], horizontal=True)
+selected_section = st.radio("📊 Select Section", ["🧬 Respondent Profile", "🏢 Insurer Profile","🗺️ Demographics by Location", "📈 Socioeconomic Patterns"], horizontal=True)
 
 if selected_section == "🧬 Respondent Profile":
     col1, col2 = st.columns([1.5, 1.5])
-
 
     with col1:
         # Age Group Distribution (Pie Chart)
@@ -99,6 +98,45 @@ if selected_section == "🧬 Respondent Profile":
         st.markdown("### Key Insights:")
         st.markdown(insight)    
 
+elif selected_section == "🏢 Insurer Profile":
+    col1, col2 = st.columns([1.5, 1.5])
+
+    with col1:
+        # Count how many responses each insurer received
+        insurer_counts = df['Insurer'].value_counts().reset_index()
+        insurer_counts.columns = ['Insurer', 'Count']
+
+        # Create a Plotly horizontal bar chart with an improved color palette
+        fig = px.bar(insurer_counts,
+                     y='Insurer',
+                     x='Count',
+                     orientation='h',
+                     title='Number of Respondents per Insurance Company',
+                     text='Count',
+                     color='Count',
+                     color_continuous_scale=px.colors.sequential.Viridis)
+
+        fig.update_layout(
+            xaxis_title='Number of Respondents',
+            yaxis_title='Insurance Company',
+            template='plotly_white'
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption("**Note:** The chart shows the number of respondents for each insurance company, Appling Filters is recommended.")
+        
+    with col2:
+        st.subheader("🧠 Gemini Insights")
+        digital_prompt = f"""
+        You are a data analyst summarizing insurance user survey data. Analyze the following demographic distributions and provide key insights in 3 concise bullet points. 
+        Focus on trends, anomalies, or significant patterns.
+
+        Insurer Company Distribution:
+        {insurer_counts.to_string()}
+        """
+        insight = generate_llm_insight(digital_prompt)
+        st.markdown("### Key Insights:")
+        st.markdown(insight)    
+
 elif selected_section == "🗺️ Demographics by Location":
     col1, col2 = st.columns([1.5, 1.5])
 
@@ -128,7 +166,7 @@ elif selected_section == "🗺️ Demographics by Location":
         You are a data analyst summarizing insurance user survey data. Analyze the following demographic distributions and provide key insights in 3 concise bullet points. 
         Focus on trends, anomalies, or significant patterns.
 
-        Age Group Distribution City:
+        Age Group Distribution by City:
         {age_city_df.to_string()}
 
         Education Level Distribution by City:
